@@ -19,7 +19,7 @@ int gettoken(char *token, char *line)
         {
             *token++ = *line;
             i++;
-            strcpy(line, line + 1);
+            memmove(line, line + 1,strlen(line));
         }
         strcpy(line, line + 1); // 把第二个引号移除
     }
@@ -30,7 +30,7 @@ int gettoken(char *token, char *line)
         {
             *token++ = *line;
             i++;
-            strcpy(line, line + 1);
+            memmove(line, line + 1,strlen(line));
         }
     }
     // 给token添加结束符号
@@ -42,7 +42,7 @@ int gettoken(char *token, char *line)
     // 移除第一个词后的空格
     while (*line == ' ')
     {
-        strcpy(line, line + 1);
+        memmove(line, line + 1,strlen(line));
     }
     return i;
 }
