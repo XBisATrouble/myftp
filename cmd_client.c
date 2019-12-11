@@ -5,17 +5,28 @@
 #include <stdio.h>
 
 // 登录，成功返回1，失败返回0，出错返回-1
-int client_login(int sockfd)
+int client_login(int sockfd,char *username)
 {
-    char username[MAX_LENGTH], password[MAX_LENGTH];
+    char password[MAX_LENGTH]; int flag = 0;
     struct ftpmsg msg;
 
+    if(strcmp(username,"noname")==0)
+    flag = 0;
+    else if(strcmp(username,"anonym")==0)
+    flag = 1;
+    else flag = 2;
+
     // 输入用户名和密码
+    if (flag == 0)
+    {
     printf("用户名: ");
     gets(username);
+    }
+    if (flag!=1 && strcmp(username,"anonym")!=0 )
+    {
     printf("密码: ");
     gets(password);
-
+    }
     // 发送并检测用户名
     msg.type = LOGIN;
     msg.len = strlen(username) + 1;
@@ -23,7 +34,11 @@ int client_login(int sockfd)
     send_msg(sockfd, &msg);  // 发送用户名（LOGIN）
     recv_msg(sockfd, &msg);  // 接收回复（SUCCESS / FAILURE）
     if (msg.type == SUCCESS) // 用户名验证通过
-    {
+    {   if (strcmp(username,"anonym")==0 )
+        {
+            printf("登录成功，欢迎，%s！\n\n", username);
+            return 1;
+        }
         // 向服务器发送密码
         msg.type = LOGIN;
         msg.len = strlen(password) + 1;

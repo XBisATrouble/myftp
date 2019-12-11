@@ -2,8 +2,8 @@
 #define _MYFTP_MSG_H_
 
 #define DEFAULT_PORT 12345
-#define DEFAULT_IP "127.0.0.1"
-
+#define DEFAULT_IP "::1"
+#define DEFAULT_USER "admin"
 enum ftpmsg_type // FTP消息类型
 {
     DEFAULT,

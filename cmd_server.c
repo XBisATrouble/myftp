@@ -2,8 +2,6 @@
 #include "file.h"
 #include "header.h"
 #include "msg.h"
-#include<stdio.h>
-#include<string.h>
 #include <stdio.h>
 
 
@@ -20,56 +18,62 @@ int c_login(int sockfd, char *username)
     char USERNAME[20];
     char PASSWORD[20];
     struct ftpmsg msg;
-    /*
-     * 打开文件
-     */
-    if ((fp1=fopen("account.txt","r"))==NULL)
-    {
-        printf("cannot open file\n");
+    // 登录信息
+    if (!strcmp(username, "anonym")){
+        send_simple(sockfd, SUCCESS);
         return 0;
-    }
-
-    while(!feof(fp1))
-    {
-        fscanf(fp1,"%s",USERNAME);
-        if(!strcmp(username, USERNAME))
+    } else {
+        /*
+        * 打开文件
+        */
+        if ((fp1=fopen("account.txt","r"))==NULL)
         {
-            // 用户名正确
-            send_simple(sockfd, SUCCESS); // 回复SUCCESS
-            recv_msg(sockfd, &msg);       // 接收密码（LOGIN）
-            fscanf(fp1,"%s",PASSWORD);
-            // 验证密码
-            if (msg.type != LOGIN)
+            printf("cannot open file\n");
+            return 0;
+        }
+
+        while(!feof(fp1))
+        {
+            fscanf(fp1,"%s",USERNAME);
+            if(!strcmp(username, USERNAME))
             {
-                fprintf(stderr, "密码验证时收到意外消息\n");
-                return -1;
-            }
-            if (!strcmp(msg.data, PASSWORD))
-            {
-                // 密码正确
-                printf("客户端%s登录成功\n", username);
+                // 用户名正确
                 send_simple(sockfd, SUCCESS); // 回复SUCCESS
-                return 0;
+                recv_msg(sockfd, &msg);       // 接收密码（LOGIN）
+                fscanf(fp1,"%s",PASSWORD);
+                // 验证密码
+                if (msg.type != LOGIN)
+                {
+                    fprintf(stderr, "密码验证时收到意外消息\n");
+                    return -1;
+                }
+                if (!strcmp(msg.data, PASSWORD))
+                {
+                    // 密码正确
+                    printf("客户端%s登录成功\n", username);
+                    send_simple(sockfd, SUCCESS); // 回复SUCCESS
+                    return 0;
+                }
+                else
+                {
+                    // 密码错误
+                    printf("客户端%s登录信息错误\n", username);
+                    send_simple(sockfd, FAILURE); // 回复FAILURE
+                    return 0;
+                }
             }
-            else
-            {
-                // 密码错误
+
+            fscanf(fp1,"%s",USERNAME);
+
+            if (feof(fp1)) {
+                // 用户名错误
                 printf("客户端%s登录信息错误\n", username);
                 send_simple(sockfd, FAILURE); // 回复FAILURE
                 return 0;
             }
         }
-
-        fscanf(fp1,"%s",USERNAME);
-
-        if (feof(fp1)) {
-            // 用户名错误
-            printf("客户端%s登录信息错误\n", username);
-            send_simple(sockfd, FAILURE); // 回复FAILURE
-            return 0;
-        }
+        fclose(fp1);
     }
-    fclose(fp1);
 }
 
 int c_mkdir(int sockfd, char *dir)

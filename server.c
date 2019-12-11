@@ -6,21 +6,28 @@ int main(int argc, char const *argv[])
 {
     char ip[20] = DEFAULT_IP;
     int port = DEFAULT_PORT;
+    char user[20] = DEFAULT_USER;
     if (argc == 2) // 只有一个参数时
     {
         port = atoi(argv[1]); // 将参数作为端口号
     }
-    else if (argc > 2) // 有两个（或更多）参数时
+    else if (argc == 3) // 有两个（或更多）参数时
     {
         strcpy(ip, argv[1]);  // 将第一个参数作为IP地址
         port = atoi(argv[2]); // 将第二个参数作为端口号
     }
+    else if (argc == 4)
+    {
+        strcpy(ip, argv[1]);  // 将第一个参数作为IP地址
+        port = atoi(argv[2]); // 将第二个参数作为端口号
+        strcpy(user,argv[3]); 
+    }
 
     int server_sockfd, client_sockfd, server_len, client_len, result;
-    struct sockaddr_in server_address, client_address;
+    struct sockaddr_in6 server_address, client_address;
 
     // 创建套接字
-    server_sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    server_sockfd = socket(AF_INET6, SOCK_STREAM , 0);
     /*  AF_INET:        ARPA因特网协议（UNIX网络套接字）
         SOCK_STREAM:    流套接字
         SOCK_NONBLOCK:  非阻塞
@@ -32,9 +39,9 @@ int main(int argc, char const *argv[])
     }
 
     // 套接字地址
-    server_address.sin_family = AF_INET;            // 域
-    server_address.sin_addr.s_addr = inet_addr(ip); // IP地址
-    server_address.sin_port = htons(port);          // 端口号
+    server_address.sin6_family = AF_INET6;            // 域
+    server_address.sin6_addr= in6addr_any; // IP地址
+    server_address.sin6_port = htons(port);          // 端口号
 
     // 计算长度
     server_len = sizeof(server_address);
@@ -112,6 +119,8 @@ int main(int argc, char const *argv[])
             switch (msg.type)
             {
             case LOGIN:
+                if(strcmp(user,"anonym")==0)
+                    msg.data = user;
                 c_login(client_sockfd, msg.data);
                 break;
             case C_MKDIR:

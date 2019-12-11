@@ -3,7 +3,7 @@
 
 #include "cmd.h"
 
-int client_login(int sockfd);
+int client_login(int sockfd,char *username);
 int client_lmkdir(char *dir);
 int client_lrmdir(char *dir);
 int client_lpwd();
