@@ -1,5 +1,5 @@
-SERVER = ftpserver
-CLIENT = myftp
+SERVER = server
+CLIENT = client
 
 # 忽略警告
 NOWARN = -w
