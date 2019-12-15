@@ -17,5 +17,5 @@ int client_ls(int sockfd, char *dir);
 int client_put(int sockfd, char *path);
 int client_get(int sockfd, char *path);
 int client_help();
-
+void client_log(char *msg);
 #endif

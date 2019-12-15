@@ -51,21 +51,18 @@ int main(int argc, char const *argv[])
         0:              使用默认协议	                */
     if (sockfd == -1)
     {
-        fprintf(stderr, "socket函数出错，客户端创建套接字失败\n");
-        log("socket函数出错，客户端创建套接字失败");
+        client_log("socket函数出错，客户端创建套接字失败");
         return -1;
     }
 
     if(setsockopt(sockfd,SOL_SOCKET,SO_SNDTIMEO,(char *)&timeout,sizeof(struct timeval))==-1)  //设置发送超时
     {
-        fprintf(stderr, "发送超时设置失败\n");
-        log("发送超时设置失败");
+        client_log("发送超时设置失败");
     }
 
     if(setsockopt(sockfd,SOL_SOCKET,SO_RCVTIMEO,(char *)&timeout,sizeof(struct timeval))==-1)  //设置接收超时
     {
-        fprintf(stderr, "接收超时设置失败\n");
-        log("接收超时设置失败");
+        client_log("接收超时设置失败");
     }
     
     // 套接字地址
@@ -80,8 +77,7 @@ int main(int argc, char const *argv[])
     result = connect(sockfd, (struct sockaddr *)&address, len);
     if (result == -1)
     {
-        fprintf(stderr, "connect函数出错，客户端请求连接失败，请检查服务器是否正在运行\n");
-        log("connect函数出错，客户端请求连接失败，请检查服务器是否正在运行");
+        client_log("connect函数出错，客户端请求连接失败，请检查服务器是否正在运行");
         return -1;
     }
 
@@ -89,9 +85,7 @@ int main(int argc, char const *argv[])
 
     // 开启命令行
 
-    // 用户登录，直到成功
-    printf("连接服务器成功：\n");
-    log("连接服务器成功");
+    client_log("连接服务器成功");
     while (client_login(sockfd,username) != 1)
     {
     }
@@ -167,12 +161,7 @@ int main(int argc, char const *argv[])
         }
         else
         {
-            printf("错误的指令，使用help命令查看指令列表\n");
-            FILE *fp = fopen("log.txt", "w");
-            fprintf(fp,"错误的指令，使用help命令查看指令列表 时间: %02d-%02d-%02d %02d:%02d:%02d\n",
-                    ptminfo->tm_year + 1900, ptminfo->tm_mon + 1, ptminfo->tm_mday,
-                    ptminfo->tm_hour, ptminfo->tm_min, ptminfo->tm_sec);
-            fclose(fp);
+            client_log("错误的指令，使用help命令查看指令列表");
         }
     }
 
