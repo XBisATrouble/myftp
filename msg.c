@@ -288,3 +288,20 @@ int recv_file(int sockfd)
     printf("\n%s接收成功（已接收%ld/%ld字节）\n", filename, recvd, size);
     return 0;
 }
+
+void log(char *msg)
+{
+    // 获取时间
+    time_t rawtime;
+    struct tm *ptminfo;
+
+    time(&rawtime);
+    ptminfo = localtime(&rawtime);
+
+    FILE *fp = fopen("log.txt", "a+");
+    fprintf(fp,"%s 时间: %02d-%02d-%02d %02d:%02d:%02d\n",
+            msg,
+            ptminfo->tm_year + 1900, ptminfo->tm_mon + 1, ptminfo->tm_mday,
+            ptminfo->tm_hour, ptminfo->tm_min, ptminfo->tm_sec);
+    fclose(fp);
+}

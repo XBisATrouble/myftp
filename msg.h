@@ -45,4 +45,6 @@ int send_simple(int sockfd, enum ftpmsg_type type);
 int send_file(int sockfd, char *path);
 int recv_file(int sockfd);
 
+void log(char *msg);
+
 #endif
