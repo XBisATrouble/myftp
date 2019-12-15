@@ -8,6 +8,14 @@ int main(int argc, char const *argv[])
     int port = DEFAULT_PORT;
     char username[20] = "noname";
     int overtime=3;  //超时时间
+    // 获取时间
+    time_t rawtime;
+    struct tm *ptminfo;
+
+    time(&rawtime);
+    ptminfo = localtime(&rawtime);
+
+
 
     if (argc == 2) // 只有一个参数时
     {
@@ -79,6 +87,11 @@ int main(int argc, char const *argv[])
 
     // 用户登录，直到成功
     printf("连接服务器成功：\n");
+    FILE *fp = fopen("log.txt", "w");
+    fprintf(fp,"连接服务器成功 时间: %02d-%02d-%02d %02d:%02d:%02d\n",
+           ptminfo->tm_year + 1900, ptminfo->tm_mon + 1, ptminfo->tm_mday,
+           ptminfo->tm_hour, ptminfo->tm_min, ptminfo->tm_sec);
+    fclose(fp);
     while (client_login(sockfd,username) != 1)
     {
     }
@@ -155,6 +168,11 @@ int main(int argc, char const *argv[])
         else
         {
             printf("错误的指令，使用help命令查看指令列表\n");
+            FILE *fp = fopen("log.txt", "w");
+            fprintf(fp,"错误的指令，使用help命令查看指令列表 时间: %02d-%02d-%02d %02d:%02d:%02d\n",
+                    ptminfo->tm_year + 1900, ptminfo->tm_mon + 1, ptminfo->tm_mday,
+                    ptminfo->tm_hour, ptminfo->tm_min, ptminfo->tm_sec);
+            fclose(fp);
         }
     }
 

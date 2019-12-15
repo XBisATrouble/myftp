@@ -43,6 +43,7 @@
 // in_addr_t inet_addr(const char *cp);
 
 #include <errno.h>
+#include <time.h>
 
 #define MAX_LENGTH 1000 // 字符串长度上限
 #define MAX_ARGC 10     // 命令参数个数上限+1
