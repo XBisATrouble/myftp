@@ -52,23 +52,23 @@ int client_login(int sockfd,char *username)
         }
         else if (msg.type == FAILURE) // 密码错误
         {
-            printf("密码错误\n");
+            client_log("密码错误");
             return 0;
         }
         else
         {
-            fprintf(stderr, "密码验证时收到意外消息\n");
+            client_log("密码验证时收到意外消息");
             return -1;
         }
     }
     else if (msg.type == FAILURE) // 用户名错误
     {
-        printf("用户名错误\n");
+        client_log("用户名错误");
         return 0;
     }
     else
     {
-        fprintf(stderr, "用户名验证时收到意外消息\n");
+        client_log("用户名验证时收到意外消息");
         return -1;
     }
 }
@@ -77,7 +77,7 @@ int client_lmkdir(char *line)
 {
     if (line == NULL || !strcmp(line, ""))
     {
-        fprintf(stderr, "错误：需要参数，正确用法为：lmkdir <本地路径>\n");
+        client_log("错误：需要参数，正确用法为：lmkdir <本地路径>");
         return -1;
     }
 
@@ -93,7 +93,7 @@ int client_lrmdir(char *line)
 {
     if (line == NULL || !strcmp(line, ""))
     {
-        fprintf(stderr, "错误：需要参数，正确用法为：lrmdir <本地路径>\n");
+        client_log("错误：需要参数，正确用法为：lrmdir <本地路径>");
         return -1;
     }
 
@@ -307,21 +307,23 @@ int client_ls(int sockfd, char *line)
         if (msg.data == "")
         {
             printf("服务器目录%s为空\n");
+            client_log("服务器目录为空");
         }
         else
         {
+            client_log("获取服务器目录成功");
             printf("服务器目录%s下的内容：\n%s\n", dir, msg.data);
         }
         return 0;
     }
     else if (msg.type == FAILURE)
     {
-        fprintf(stderr, "获取服务器文件列表失败\n");
+        client_log("获取服务器文件列表失败");
         return -1;
     }
     else
     {
-        fprintf(stderr, "ls命令收到意外消息\n");
+        client_log("ls命令收到意外消息");
         return -1;
     }
 };
