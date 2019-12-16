@@ -7,9 +7,23 @@ int main(int argc, char const *argv[])
     char ip[20] = DEFAULT_IP;
     int port = DEFAULT_PORT;
     char user[20] = DEFAULT_USER;
+    FILE *fp1;
     if (argc == 2) // 只有一个参数时
     {
-        port = atoi(argv[1]); // 将参数作为端口号
+        if (!strcmp(argv[1],"server.ini")) {
+            if ((fp1=fopen("server.ini","r"))==NULL)
+            {
+                printf("cannot open file\n");
+                return 0;
+            }
+            while(!feof(fp1))
+            {
+                fscanf(fp1,"%s %d",&ip,&port);
+            }
+        }
+        else {
+            port = atoi(argv[1]); // 将参数作为端口号
+        }
     }
     else if (argc == 3) // 有两个（或更多）参数时
     {

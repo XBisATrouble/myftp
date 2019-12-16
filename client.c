@@ -11,15 +11,27 @@ int main(int argc, char const *argv[])
     // 获取时间
     time_t rawtime;
     struct tm *ptminfo;
+    FILE *fp1;
 
     time(&rawtime);
     ptminfo = localtime(&rawtime);
 
-
-
     if (argc == 2) // 只有一个参数时
     {
-        port = atoi(argv[1]); // 将参数作为端口号
+        if (!strcmp(argv[1],"client.ini")) {
+            if ((fp1=fopen("client.ini","r"))==NULL)
+            {
+                printf("cannot open file\n");
+                return 0;
+            }
+            while(!feof(fp1))
+            {
+                fscanf(fp1,"%s %d %s %d",&ip,&port,&username,&overtime);
+            }
+        }
+        else {
+            port = atoi(argv[1]); // 将参数作为端口号
+        }
     }
     else if (argc == 3) // 有两个参数时
     {
