@@ -188,3 +188,21 @@ int c_get(int sockfd, char *path)
 {
     return send_file(sockfd, path);
 }
+
+void server_log(char *msg)
+{
+    fprintf(stderr, "%s\n",msg);
+    // 获取时间
+    time_t rawtime;
+    struct tm *ptminfo;
+
+    time(&rawtime);
+    ptminfo = localtime(&rawtime);
+
+    FILE *fp = fopen("server.log", "a+");
+    fprintf(fp,"%s 时间: %02d-%02d-%02d %02d:%02d:%02d\n",
+            msg,
+            ptminfo->tm_year + 1900, ptminfo->tm_mon + 1, ptminfo->tm_mday,
+            ptminfo->tm_hour, ptminfo->tm_min, ptminfo->tm_sec);
+    fclose(fp);
+}

@@ -16,5 +16,6 @@ int c_cd(int sockfd, char *dir);
 int c_ls(int sockfd, char *dir);
 int c_put(int sockfd);
 int c_get(int sockfd, char *path);
+void server_log(char *msg);
 
 #endif
