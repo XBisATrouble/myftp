@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
         0:              使用默认协议	                */
     if (server_sockfd == -1)
     {
-        fprintf(stderr, "socket函数出错，服务器创建套接字失败，请检查端口号是否被占用\n");
+        server_log("socket函数出错，服务器创建套接字失败，请检查端口号是否被占用");
         return -1;
     }
 
@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
     result = bind(server_sockfd, (struct sockaddr *)&server_address, server_len);
     if (result == -1)
     {
-        fprintf(stderr, "bind函数出错，服务器命名套接字失败\n");
+        server_log("bind函数出错，服务器命名套接字失败");
         return -1;
     }
     while(1){
@@ -58,11 +58,12 @@ int main(int argc, char const *argv[])
         result = listen(server_sockfd, 5);
         if (result == -1)
         {
-            fprintf(stderr, "listen函数出错，服务器创建套接字队列失败\n");
+            server_log("listen函数出错，服务器创建套接字队列失败");
             return -1;
         }
 
         // 服务器启动
+        server_log("服务器已启动，正在等待连接");
         printf("服务器已启动，正在等待连接，IP地址：%s，端口号：%d\n", ip, port);
         client_len = sizeof(client_address);
 
@@ -70,7 +71,7 @@ int main(int argc, char const *argv[])
         int tfd = open("/dev/tty", O_RDONLY | O_NONBLOCK);
         if (tfd == -1)
         {
-            fprintf(stderr, "open函数出错（/dev/tty）\n");
+            server_log("open函数出错（/dev/tty）");
             return -1;
         }
         else
@@ -85,7 +86,8 @@ int main(int argc, char const *argv[])
         int pid;
         client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (socklen_t *)&client_len);
         if((pid = fork())<0){
-            fprintf(stderr, "fork failed\n");
+            server_log("fork failed");
+
         }else if(pid == 0 ){
             connected = 1 ;
             close(server_sockfd);
@@ -105,13 +107,13 @@ int main(int argc, char const *argv[])
                         }
                         else
                         {
-                            fprintf(stderr, "accept函数出错，服务器接受连接失败\n");
+                            server_log("accept函数出错，服务器接受连接失败");
                             return -1;
                         }
                     }
                     else
                     {
-                        printf("连接成功，等待用户登录\n");
+                        server_log("连接成功，等待用户登录");
                         connected = 1;
                     }
                 }
@@ -151,6 +153,7 @@ int main(int argc, char const *argv[])
                             c_get(client_sockfd, msg.data);
                             break;
                         case C_QUIT:
+                            server_log("客户端连接已断开，正在等待重新连接");
                             printf("客户端连接已断开，正在等待重新连接，IP地址：%s，端口号：%d\n", ip, port);
                             msg.type = DEFAULT;
                             connected = 0;
@@ -168,7 +171,8 @@ int main(int argc, char const *argv[])
                     }
                     else
                     {
-                        fprintf(stderr, "read函数出错，读取指令失败\n");
+
+                        server_log("read函数出错，读取指令失败");
                     }
                 }
                 else
